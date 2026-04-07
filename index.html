@@ -3,161 +3,357 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ক্লাস শিডিউল ক্যালেন্ডার</title>
+    <title>ক্লাস শিডিউল ড্যাশবোর্ড</title>
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f0f8f0;
+        :root {
+            --bg-primary: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            --bg-secondary: rgba(26, 26, 46, 0.8);
+            --card-bg: rgba(30, 30, 50, 0.95);
+            --text-primary: #e0e6ed;
+            --text-secondary: #b8bcc8;
+            --accent-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --accent-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --warning: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            --shadow: 0 25px 50px rgba(0,0,0,0.5);
+            --glass: rgba(255,255,255,0.1);
+        }
+        
+        [data-theme="light"] {
+            --bg-primary: linear-gradient(135deg, #ffecd2 0%, #fcb69f 50%, #a8edea 100%);
+            --bg-secondary: rgba(255,255,255,0.9);
+            --card-bg: rgba(255,255,255,0.98);
+            --text-primary: #2c3e50;
+            --text-secondary: #5a6c7d;
+            --accent-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --accent-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            --warning: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            --shadow: 0 20px 40px rgba(0,0,0,0.1);
+            --glass: rgba(0,0,0,0.05);
+        }
+        
+        * {
             margin: 0;
-            padding: 20px;
-            color: #333;
+            padding: 0;
+            box-sizing: border-box;
         }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
+        
+        body {
+            font-family: 'Segoe UI', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .header {
             display: flex;
-            gap: 20px;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto 40px;
+            padding: 0 20px;
         }
-        .calendar-section {
-            flex: 1;
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        
+        h1 {
+            font-size: 2.2em;
+            background: var(--accent-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
         }
-        .schedule-section {
-            flex: 1;
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1.3fr;
+            gap: 40px;
+            padding: 0 20px;
         }
-        h1, h2 {
-            text-align: center;
-            color: #2e7d32;
+        
+        .section {
+            background: var(--card-bg);
+            border-radius: 25px;
+            padding: 35px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--glass);
         }
+        
+        .section h2 {
+            font-size: 1.6em;
+            margin-bottom: 25px;
+            color: var(--text-primary);
+            padding-bottom: 15px;
+            border-bottom: 2px solid transparent;
+            background: linear-gradient(var(--accent-primary), var(--accent-primary)) no-repeat bottom / 0 2px;
+            transition: background-size 0.3s;
+        }
+        
+        .section h2:hover {
+            background-size: 100% 2px;
+        }
+        
+        .month-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            gap: 15px;
+        }
+        
+        .nav-btn, .theme-toggle {
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(102,126,234,0.4);
+        }
+        
+        .nav-btn:hover, .theme-toggle:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(102,126,234,0.6);
+        }
+        
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 10px 0;
+            background: var(--glass);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            margin-top: 10px;
         }
-        th, td {
-            border: 2px solid #4caf50;
-            padding: 10px;
-            text-align: center;
-            background: #e8f5e8;
-        }
+        
         th {
-            background: #4caf50;
+            background: var(--accent-primary);
             color: white;
-            font-weight: bold;
+            padding: 18px 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 13px;
         }
-        .day-cell {
+        
+        td {
+            padding: 22px 12px;
+            border-bottom: 1px solid var(--glass);
+            transition: all 0.3s ease;
             cursor: pointer;
-            transition: background 0.3s;
+            position: relative;
         }
+        
+        .day-cell {
+            font-size: 20px;
+            font-weight: 700;
+            border-radius: 15px;
+            text-align: center;
+        }
+        
         .day-cell:hover {
-            background: #c8e6c9 !important;
+            background: var(--warning);
+            color: #2c3e50 !important;
+            transform: scale(1.15);
+            box-shadow: 0 10px 25px rgba(255,193,7,0.4);
         }
+        
         .selected {
-            background: #81c784 !important;
-            font-weight: bold;
+            background: var(--success) !important;
+            color: white !important;
+            box-shadow: 0 0 25px rgba(79,172,254,0.7);
+            transform: scale(1.08);
         }
+        
         .today {
-            background: #ffeb3b !important;
-            font-weight: bold;
+            background: var(--accent-secondary) !important;
+            color: white !important;
+            box-shadow: 0 0 20px rgba(240,147,251,0.6);
+            animation: glow 2s ease-in-out infinite alternate;
         }
+        
+        @keyframes glow {
+            from { box-shadow: 0 0 15px rgba(240,147,251,0.5); }
+            to { box-shadow: 0 0 25px rgba(240,147,251,0.8); }
+        }
+        
+        .has-class {
+            background: linear-gradient(135deg, #ff6b6b, #ffa500) !important;
+            color: white !important;
+            box-shadow: 0 0 15px rgba(255,107,107,0.5);
+        }
+        
         .schedule-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
         }
+        
         .day-card {
-            background: linear-gradient(135deg, #a5d6a7, #e1f5fe);
-            border-radius: 12px;
-            padding: 15px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-            border-left: 5px solid #4caf50;
+            background: var(--glass);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid var(--glass);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            transition: all 0.4s ease;
         }
+        
+        .day-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+        
         .day-name {
-            font-size: 1.2em;
-            font-weight: bold;
-            color: #1b5e20;
-            margin-bottom: 10px;
-        }
-        .class-item {
-            background: white;
-            margin: 8px 0;
-            padding: 10px;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            border-left: 4px solid #ff9800;
-        }
-        .class-time {
-            font-weight: bold;
-            color: #e65100;
-        }
-        .no-schedule {
+            font-size: 1.8em;
+            font-weight: 800;
+            background: var(--success);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
             text-align: center;
-            color: #666;
-            font-style: italic;
         }
-        @media (max-width: 768px) {
-            .container {
-                flex-direction: column;
+        
+        .date-info {
+            background: var(--glass);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 1.3em;
+            border-left: 5px solid var(--accent-primary);
+        }
+        
+        .class-item {
+            background: var(--glass);
+            margin: 15px 0;
+            padding: 25px;
+            border-radius: 18px;
+            border-left: 6px solid var(--accent-secondary);
+            transition: all 0.3s ease;
+        }
+        
+        .class-item:hover {
+            transform: translateX(8px);
+            box-shadow: 0 10px 25px rgba(102,126,234,0.3);
+        }
+        
+        .class-time {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #ffd700;
+            margin-bottom: 8px;
+        }
+        
+        .class-subject {
+            font-size: 1.8em;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+        
+        .no-schedule {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 40px;
+            background: var(--glass);
+            border-radius: 25px;
+            border: 2px dashed var(--glass);
+            color: var(--text-secondary);
+            font-size: 1.4em;
+        }
+        
+        @media (max-width: 1024px) {
+            .container { 
+                grid-template-columns: 1fr; 
+                gap: 30px; 
             }
+        }
+        
+        @media (max-width: 768px) {
+            .header { flex-direction: column; gap: 20px; }
+            h1 { font-size: 1.8em; text-align: center; }
+            .month-nav { flex-direction: column; gap: 15px; }
         }
     </style>
 </head>
 <body>
-    <h1>ক্লাস শিডিউল চেকার</h1>
+    <div class="header">
+        <h1>📚 একাডেমিক ড্যাশবোর্ড</h1>
+        <button class="theme-toggle" id="themeToggle">🌙</button>
+    </div>
+    
     <div class="container">
-        <div class="calendar-section">
-            <h2>ক্যালেন্ডার</h2>
-            <table id="calendar">
-                <!-- ক্যালেন্ডার ডাইনামিক্যালি জেনারেট হবে -->
+        <div class="section calendar-section">
+            <div class="month-nav">
+                <h2 id="monthTitle">ক্যালেন্ডার লোড হচ্ছে...</h2>
+                <div>
+                    <button class="nav-btn" onclick="prevMonth()">পূর্ববর্তী</button>
+                    <button class="nav-btn" onclick="nextMonth()">পরবর্তী</button>
+                </div>
+            </div>
+            <table id="calendarTable">
+                <!-- ক্যালেন্ডার এখানে লোড হবে -->
             </table>
         </div>
-        <div class="schedule-section">
-            <h2 id="selectedDayTitle">তারিখ সিলেক্ট করুন</h2>
+        
+        <div class="section schedule-section">
+            <h2 id="selectedDayTitle">তারিখ নির্বাচন করুন</h2>
             <div id="scheduleContent" class="schedule-grid">
-                <p class="no-schedule">কোনো তারিখ সিলেক্ট করা হয়নি। ক্যালেন্ডার থেকে একটি তারিখ চুজ করুন।</p>
+                <div class="no-schedule">
+                    <div style="font-size: 3em; margin-bottom: 20px;">📖</div>
+                    ক্যালেন্ডার থেকে তারিখ নির্বাচন করুন
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // স্যাম্পল ক্লাস ডেটা (আপনার ছবি অনুযায়ী BOT, ENG, CHEM ইত্যাদি)
-        const classSchedule = {
-            // তারিখ: 'YYYY-MM-DD' -> বারের ক্লাস সময়সূচী
-            '2026-04-07': { day: 'সোমবার', classes: [
-                { time: '১১:০০', subject: 'BOT' },
-                { time: '১১:৩০-১২:১৫', subject: 'ENG' },
-                { time: '১২:৩০-০২:০০', subject: 'CHEM' }
-            ]},
-            '2026-04-08': { day: 'মঙ্গলবার', classes: [
-                { time: '১১:৪৫-১২:৩০', subject: 'MATH' }
-            ]},
-            '2026-04-09': { day: 'বুধবার', classes: [
-                { time: '১১:৪৫-১২:৩০', subject: 'BOT' },
-                { time: '১১:০০-১২:১৫', subject: 'ENG' }
-            ]},
-            '2026-04-10': { day: 'বৃহস্পতিবার', classes: [
-                { time: '০১:০০-০২:০০', subject: 'CHEM' }
-            ]},
-            '2026-04-11': { day: 'শুক্রবার', classes: [] },
-            '2026-04-12': { day: 'শনিবার', classes: [
-                { time: '১১:৪৫-১২:৩০', subject: 'BOT' }
-            ]}
-            // আরো তারিখ যোগ করুন
-        };
+        let currentYear = 2026;
+        let currentMonth = 3; // এপ্রিল
 
-        const monthNames = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'];
-        const dayNames = ['রবিবার', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার', 'শুক্রবার', 'শনিবার'];
+        // রবি-বৃহস্পতি শিডিউল (শুক্র-শনি ছুটি)
+        function getDaySchedule(dayIndex) {
+            const schedules = {
+                0: { day: 'রবিবার', classes: [
+                    { time: '১০:০০-১১:০০', subject: 'বাংলা' },
+                    { time: '১১:১৫-১২:১৫', subject: 'ইংরেজি' }
+                ]},
+                1: { day: 'সোমবার', classes: [
+                    { time: '১১:০০', subject: 'BOT' },
+                    { time: '১১:৩০-১২:১৫', subject: 'ENG' },
+                    { time: '১২:৩০-০২:০০', subject: 'CHEM' }
+                ]},
+                2: { day: 'মঙ্গলবার', classes: [
+                    { time: '১১:৪৫-১২:৩০', subject: 'MATH' },
+                    { time: '০১:০০-০২:০০', subject: 'PHY' }
+                ]},
+                3: { day: 'বুধবার', classes: [
+                    { time: '১১:৪৫-১২:৩০', subject: 'BOT' },
+                    { time: '১১:০০-১২:১৫', subject: 'ENG' },
+                    { time: '০১:০০-০২:০০', subject: 'CHEM' }
+                ]},
+                4: { day: 'বৃহস্পতিবার', classes: [
+                    { time: '১১:০০-১২:০০', subject: 'ENG' },
+                    { time: '১২:১৫-০১:১৫', subject: 'MATH' }
+                ]},
+                5: { day: 'শুক্রবার', classes: [] },
+                6: { day: 'শনিবার', classes: [] }
+            };
+            return schedules[dayIndex] || { day: '', classes: [] };
+        }
+
+        const monthNames = ['জানুয়ারি','ফেব্রুয়ারি','মার্চ','এপ্রিল','মে','জুন','জুলাই','আগস্ট','সেপ্টেম্বর','অক্টোবর','নভেম্বর','ডিসেম্বর'];
 
         function generateCalendar(year, month) {
-            const table = document.getElementById('calendar');
+            const monthTitle = document.getElementById('monthTitle');
+            monthTitle.textContent = `${monthNames[month]} ${year}`;
+            
+            const table = document.getElementById('calendarTable');
             table.innerHTML = `
                 <tr>
                     <th>রবি</th><th>সোম</th><th>মঙ্গ</th><th>বুধ</th><th>বৃহস্প</th><th>শুক্র</th><th>শনি</th>
@@ -166,73 +362,128 @@
 
             const firstDay = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
-            const today = new Date();
+            const today = new Date().toISOString().split('T')[0];
 
             let row = document.createElement('tr');
+            
+            // খালি সেল
             for (let i = 0; i < firstDay; i++) {
-                row.innerHTML += '<td></td>';
+                const cell = document.createElement('td');
+                row.appendChild(cell);
             }
 
+            // তারিখের সেল
             for (let day = 1; day <= daysInMonth; day++) {
                 const date = new Date(year, month, day);
                 const dateStr = date.toISOString().split('T')[0];
+                const dayIndex = date.getDay();
+                
                 const cell = document.createElement('td');
                 cell.className = 'day-cell';
                 cell.textContent = day;
                 cell.dataset.date = dateStr;
+                cell.dataset.dayindex = dayIndex;
 
-                if (classSchedule[dateStr]) {
-                    cell.style.background = '#ffecb3';
+                const schedule = getDaySchedule(dayIndex);
+                if (schedule.classes.length > 0) {
+                    cell.classList.add('has-class');
                 }
-
-                if (date.toDateString() === today.toDateString()) {
+                if (dateStr === today) {
                     cell.classList.add('today');
                 }
 
                 row.appendChild(cell);
 
-                if ((firstDay + day) % 7 === 0 || day === daysInMonth) {
+                // নতুন রো
+                if (((firstDay + day) % 7 === 0) || day === daysInMonth) {
                     table.appendChild(row);
                     row = document.createElement('tr');
                 }
             }
         }
 
-        function showSchedule(dateStr) {
+        function showSchedule(dateStr, dayIndex) {
+            const schedule = getDaySchedule(parseInt(dayIndex));
             const scheduleDiv = document.getElementById('scheduleContent');
             const title = document.getElementById('selectedDayTitle');
-            const data = classSchedule[dateStr];
 
-            if (!data || data.classes.length === 0) {
-                scheduleDiv.innerHTML = '<p class="no-schedule">এই দিনে কোনো ক্লাস নেই।</p>';
-                title.textContent = `তারিখ: ${dateStr}`;
+            title.innerHTML = `📅 ${dateStr}<br><small style="font-size:0.8em; opacity:0.8">${schedule.day}</small>`;
+
+            if (schedule.classes.length === 0) {
+                scheduleDiv.innerHTML = `
+                    <div class="no-schedule">
+                        <div style="font-size: 3em; margin-bottom: 20px;">🎉</div>
+                        ${schedule.day} - সপ্তাহিক ছুটি<br>
+                        <small style="opacity:0.7">কোনো ক্লাস নেই</small>
+                    </div>
+                `;
                 return;
             }
 
-            title.textContent = `${data.day} (${dateStr}) এর ক্লাস`;
-            scheduleDiv.innerHTML = data.classes.map(cls => `
-                <div class="day-card">
-                    <div class="day-name">${data.day}</div>
-                    <div class="class-item">
-                        <div class="class-time">${cls.time}</div>
-                        <div>${cls.subject}</div>
-                    </div>
+            scheduleDiv.innerHTML = `
+                <div class="date-info">
+                    📚 ${schedule.day} এর ক্লাস<br>
+                    <small style="opacity:0.8">(${schedule.classes.length}টি ক্লাস)</small>
                 </div>
-            `).join('');
+                ${schedule.classes.map((cls, i) => `
+                    <div class="day-card">
+                        <div class="day-name">ক্লাস ${i+1}</div>
+                        <div class="class-item">
+                            <div class="class-time">⏰ ${cls.time}</div>
+                            <div class="class-subject">📖 ${cls.subject}</div>
+                        </div>
+                    </div>
+                `).join('')}
+            `;
         }
 
-        // ইভেন্ট লিসেনার
-        document.getElementById('calendar').addEventListener('click', (e) => {
+        function prevMonth() {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            generateCalendar(currentYear, currentMonth);
+        }
+
+        function nextMonth() {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            generateCalendar(currentYear, currentMonth);
+        }
+
+        // ডে/নাইট মোড
+        const themeToggle = document.getElementById('themeToggle');
+        themeToggle.addEventListener('click', () => {
+            const body = document.body;
+            const isDark = body.getAttribute('data-theme') === 'light';
+            body.setAttribute('data-theme', isDark ? 'dark' : 'light');
+            themeToggle.textContent = isDark ? '🌙' : '☀️';
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        });
+
+        // লোড করার সময়
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.body.setAttribute('data-theme', savedTheme);
+        themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+
+        // ক্লিক ইভেন্ট
+        document.addEventListener('click', (e) => {
             if (e.target.classList.contains('day-cell')) {
-                const dateStr = e.target.dataset.date;
-                document.querySelectorAll('.day-cell').forEach(cell => cell.classList.remove('selected'));
+                document.querySelectorAll('.day-cell').forEach(cell => 
+                    cell.classList.remove('selected')
+                );
                 e.target.classList.add('selected');
-                showSchedule(dateStr);
+                showSchedule(e.target.dataset.date, e.target.dataset.dayindex);
             }
         });
 
-        // আজকের তারিখ দিয়ে ক্যালেন্ডার লোড (এপ্রিল ২০২৬)
-        generateCalendar(2026, 3);  // এপ্রিল = 3 (0-indexed)
+        // ✅ ক্যালেন্ডার লোড
+        generateCalendar(currentYear, currentMonth);
+        console.log('ক্যালেন্ডার সফলভাবে লোড হয়েছে!');
     </script>
 </body>
 </html>
