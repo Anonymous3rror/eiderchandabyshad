@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ক্লাস শিডিউল ক্যালেন্ডার</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f8f0;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            gap: 20px;
+        }
+        .calendar-section {
+            flex: 1;
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .schedule-section {
+            flex: 1;
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            text-align: center;
+            color: #2e7d32;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        th, td {
+            border: 2px solid #4caf50;
+            padding: 10px;
+            text-align: center;
+            background: #e8f5e8;
+        }
+        th {
+            background: #4caf50;
+            color: white;
+            font-weight: bold;
+        }
+        .day-cell {
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .day-cell:hover {
+            background: #c8e6c9 !important;
+        }
+        .selected {
+            background: #81c784 !important;
+            font-weight: bold;
+        }
+        .today {
+            background: #ffeb3b !important;
+            font-weight: bold;
+        }
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .day-card {
+            background: linear-gradient(135deg, #a5d6a7, #e1f5fe);
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            border-left: 5px solid #4caf50;
+        }
+        .day-name {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #1b5e20;
+            margin-bottom: 10px;
+        }
+        .class-item {
+            background: white;
+            margin: 8px 0;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-left: 4px solid #ff9800;
+        }
+        .class-time {
+            font-weight: bold;
+            color: #e65100;
+        }
+        .no-schedule {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+        }
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>ক্লাস শিডিউল চেকার</h1>
+    <div class="container">
+        <div class="calendar-section">
+            <h2>ক্যালেন্ডার</h2>
+            <table id="calendar">
+                <!-- ক্যালেন্ডার ডাইনামিক্যালি জেনারেট হবে -->
+            </table>
+        </div>
+        <div class="schedule-section">
+            <h2 id="selectedDayTitle">তারিখ সিলেক্ট করুন</h2>
+            <div id="scheduleContent" class="schedule-grid">
+                <p class="no-schedule">কোনো তারিখ সিলেক্ট করা হয়নি। ক্যালেন্ডার থেকে একটি তারিখ চুজ করুন।</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // স্যাম্পল ক্লাস ডেটা (আপনার ছবি অনুযায়ী BOT, ENG, CHEM ইত্যাদি)
+        const classSchedule = {
+            // তারিখ: 'YYYY-MM-DD' -> বারের ক্লাস সময়সূচী
+            '2026-04-07': { day: 'সোমবার', classes: [
+                { time: '১১:০০', subject: 'BOT' },
+                { time: '১১:৩০-১২:১৫', subject: 'ENG' },
+                { time: '১২:৩০-০২:০০', subject: 'CHEM' }
+            ]},
+            '2026-04-08': { day: 'মঙ্গলবার', classes: [
+                { time: '১১:৪৫-১২:৩০', subject: 'MATH' }
+            ]},
+            '2026-04-09': { day: 'বুধবার', classes: [
+                { time: '১১:৪৫-১২:৩০', subject: 'BOT' },
+                { time: '১১:০০-১২:১৫', subject: 'ENG' }
+            ]},
+            '2026-04-10': { day: 'বৃহস্পতিবার', classes: [
+                { time: '০১:০০-০২:০০', subject: 'CHEM' }
+            ]},
+            '2026-04-11': { day: 'শুক্রবার', classes: [] },
+            '2026-04-12': { day: 'শনিবার', classes: [
+                { time: '১১:৪৫-১২:৩০', subject: 'BOT' }
+            ]}
+            // আরো তারিখ যোগ করুন
+        };
+
+        const monthNames = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'];
+        const dayNames = ['রবিবার', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার', 'শুক্রবার', 'শনিবার'];
+
+        function generateCalendar(year, month) {
+            const table = document.getElementById('calendar');
+            table.innerHTML = `
+                <tr>
+                    <th>রবি</th><th>সোম</th><th>মঙ্গ</th><th>বুধ</th><th>বৃহস্প</th><th>শুক্র</th><th>শনি</th>
+                </tr>
+            `;
+
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const today = new Date();
+
+            let row = document.createElement('tr');
+            for (let i = 0; i < firstDay; i++) {
+                row.innerHTML += '<td></td>';
+            }
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(year, month, day);
+                const dateStr = date.toISOString().split('T')[0];
+                const cell = document.createElement('td');
+                cell.className = 'day-cell';
+                cell.textContent = day;
+                cell.dataset.date = dateStr;
+
+                if (classSchedule[dateStr]) {
+                    cell.style.background = '#ffecb3';
+                }
+
+                if (date.toDateString() === today.toDateString()) {
+                    cell.classList.add('today');
+                }
+
+                row.appendChild(cell);
+
+                if ((firstDay + day) % 7 === 0 || day === daysInMonth) {
+                    table.appendChild(row);
+                    row = document.createElement('tr');
+                }
+            }
+        }
+
+        function showSchedule(dateStr) {
+            const scheduleDiv = document.getElementById('scheduleContent');
+            const title = document.getElementById('selectedDayTitle');
+            const data = classSchedule[dateStr];
+
+            if (!data || data.classes.length === 0) {
+                scheduleDiv.innerHTML = '<p class="no-schedule">এই দিনে কোনো ক্লাস নেই।</p>';
+                title.textContent = `তারিখ: ${dateStr}`;
+                return;
+            }
+
+            title.textContent = `${data.day} (${dateStr}) এর ক্লাস`;
+            scheduleDiv.innerHTML = data.classes.map(cls => `
+                <div class="day-card">
+                    <div class="day-name">${data.day}</div>
+                    <div class="class-item">
+                        <div class="class-time">${cls.time}</div>
+                        <div>${cls.subject}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ইভেন্ট লিসেনার
+        document.getElementById('calendar').addEventListener('click', (e) => {
+            if (e.target.classList.contains('day-cell')) {
+                const dateStr = e.target.dataset.date;
+                document.querySelectorAll('.day-cell').forEach(cell => cell.classList.remove('selected'));
+                e.target.classList.add('selected');
+                showSchedule(dateStr);
+            }
+        });
+
+        // আজকের তারিখ দিয়ে ক্যালেন্ডার লোড (এপ্রিল ২০২৬)
+        generateCalendar(2026, 3);  // এপ্রিল = 3 (0-indexed)
+    </script>
+</body>
+</html>
