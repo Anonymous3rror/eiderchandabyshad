@@ -215,7 +215,7 @@
             
             title.textContent = `📅 ${d}/${m}/${y} — ${sched.day}`;
             if (sched.classes.length === 0) {
-                div.innerHTML = `<div style="text-align:center; padding:30px;">🌴 কোনো ক্লাস নেই</div>`;
+                div.innerHTML = `<div class="no-schedule"><div style="font-size:2.8em;margin-bottom:12px">🎉</div>${sched.day}<br><small style="opacity:.7">সাপ্তাহিক ছুটি — কোনো ক্লাস নেই</small></div>`;
                 return;
             }
 
