@@ -180,7 +180,7 @@
 
             const firstDay = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
-            const todayStr = new Date().toISOString().split('T')[0];
+            const todayStr = new Date().toLocaleDateString('en-CA');
 
             let row = document.createElement('tr');
             for (let i = 0; i < firstDay; i++) row.appendChild(document.createElement('td'));
