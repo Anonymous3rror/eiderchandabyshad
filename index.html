@@ -5,396 +5,595 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ক্লাস শিডিউল ড্যাশবোর্ড</title>
     <style>
+        /* ===== DARK MODE (default) ===== */
         :root {
             --bg-primary: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
-            --bg-secondary: rgba(26, 26, 46, 0.8);
             --card-bg: rgba(30, 30, 50, 0.95);
             --text-primary: #e0e6ed;
-            --text-secondary: #b8bcc8;
+            --text-secondary: #9aa5b4;
             --accent-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             --accent-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            --success: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            --warning: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-            --shadow: 0 25px 50px rgba(0,0,0,0.5);
-            --glass: rgba(255,255,255,0.1);
+            --shadow: 0 20px 45px rgba(0,0,0,0.5);
+            --glass: rgba(255,255,255,0.07);
+            --glass-border: rgba(255,255,255,0.11);
+            --input-bg: rgba(255,255,255,0.07);
+            --input-border: rgba(255,255,255,0.15);
+            --todo-bg: rgba(255,255,255,0.05);
+            --todo-hover: rgba(255,255,255,0.09);
+            --divider: rgba(255,255,255,0.09);
+            /* calendar date colors */
+            --has-class-bg: linear-gradient(135deg, #6366f1, #7c3aed);
+            --has-class-shadow: rgba(99,102,241,0.4);
+            --today-bg: linear-gradient(135deg, #f093fb, #f5576c);
+            --today-glow: rgba(240,147,251,0.5);
+            --selected-bg: linear-gradient(135deg, #4facfe, #00f2fe);
+            --selected-glow: rgba(79,172,254,0.55);
+            --hover-bg: linear-gradient(135deg, #43e97b, #38f9d7);
         }
-        
+
+        /* ===== LIGHT MODE ===== */
         [data-theme="light"] {
-            --bg-primary: linear-gradient(135deg, #ffecd2 0%, #fcb69f 50%, #a8edea 100%);
-            --bg-secondary: rgba(255,255,255,0.9);
-            --card-bg: rgba(255,255,255,0.98);
-            --text-primary: #2c3e50;
-            --text-secondary: #5a6c7d;
-            --accent-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --accent-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            --success: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-            --warning: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
-            --shadow: 0 20px 40px rgba(0,0,0,0.1);
-            --glass: rgba(0,0,0,0.05);
+            --bg-primary: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 45%, #ede9fe 100%);
+            --card-bg: rgba(255,255,255,0.96);
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --accent-primary: linear-gradient(135deg, #6366f1, #8b5cf6);
+            --accent-secondary: linear-gradient(135deg, #ec4899, #f43f5e);
+            --shadow: 0 16px 40px rgba(99,102,241,0.13);
+            --glass: rgba(99,102,241,0.06);
+            --glass-border: rgba(99,102,241,0.14);
+            --input-bg: rgba(99,102,241,0.05);
+            --input-border: rgba(99,102,241,0.2);
+            --todo-bg: rgba(99,102,241,0.05);
+            --todo-hover: rgba(99,102,241,0.1);
+            --divider: rgba(99,102,241,0.1);
+            /* calendar date colors */
+            --has-class-bg: linear-gradient(135deg, #6366f1, #8b5cf6);
+            --has-class-shadow: rgba(99,102,241,0.3);
+            --today-bg: linear-gradient(135deg, #ec4899, #f43f5e);
+            --today-glow: rgba(236,72,153,0.35);
+            --selected-bg: linear-gradient(135deg, #0ea5e9, #06b6d4);
+            --selected-glow: rgba(14,165,233,0.4);
+            --hover-bg: linear-gradient(135deg, #10b981, #34d399);
         }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
             font-family: 'Segoe UI', -apple-system, sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
             min-height: 100vh;
-            padding: 20px;
+            padding: 24px 20px;
+            transition: background 0.4s ease, color 0.3s;
         }
-        
+
+        /* ===== HEADER ===== */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             max-width: 1400px;
-            margin: 0 auto 40px;
-            padding: 0 20px;
+            margin: 0 auto 36px;
         }
-        
+
         h1 {
-            font-size: 2.2em;
+            font-size: 2.1em;
+            font-weight: 800;
             background: var(--accent-primary);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            font-weight: 700;
         }
-        
+
+        .theme-toggle {
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            padding: 11px 22px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s;
+            box-shadow: 0 5px 18px rgba(102,126,234,0.35);
+        }
+        .theme-toggle:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(102,126,234,0.5); }
+
+        /* ===== LAYOUT ===== */
         .container {
             max-width: 1400px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: 1fr 1.3fr;
-            gap: 40px;
-            padding: 0 20px;
+            grid-template-columns: 420px 1fr 340px;
+            gap: 26px;
         }
-        
+
         .section {
             background: var(--card-bg);
-            border-radius: 25px;
-            padding: 35px;
+            border-radius: 22px;
+            padding: 28px;
             box-shadow: var(--shadow);
-            border: 1px solid var(--glass);
+            border: 1px solid var(--glass-border);
+            transition: background 0.3s, box-shadow 0.3s;
         }
-        
-        .section h2 {
-            font-size: 1.6em;
-            margin-bottom: 25px;
+
+        .section-title {
+            font-size: 1.25em;
+            font-weight: 700;
             color: var(--text-primary);
-            padding-bottom: 15px;
-            border-bottom: 2px solid transparent;
-            background: linear-gradient(var(--accent-primary), var(--accent-primary)) no-repeat bottom / 0 2px;
-            transition: background-size 0.3s;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--divider);
         }
-        
-        .section h2:hover {
-            background-size: 100% 2px;
-        }
-        
+
+        /* ===== CALENDAR ===== */
         .month-nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
-            gap: 15px;
+            margin-bottom: 18px;
+            gap: 10px;
         }
-        
-        .nav-btn, .theme-toggle {
+
+        .month-label {
+            font-size: 1.1em;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .nav-btn {
             background: var(--accent-primary);
             color: white;
             border: none;
-            padding: 14px 28px;
+            padding: 8px 18px;
             border-radius: 50px;
             cursor: pointer;
+            font-size: 13px;
             font-weight: 600;
-            font-size: 15px;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 25px rgba(102,126,234,0.4);
+            transition: all 0.25s;
+            box-shadow: 0 4px 14px rgba(102,126,234,0.3);
         }
-        
-        .nav-btn:hover, .theme-toggle:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 30px rgba(102,126,234,0.6);
-        }
-        
+        .nav-btn:hover { transform: translateY(-2px); box-shadow: 0 7px 20px rgba(102,126,234,0.5); }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            background: var(--glass);
-            border-radius: 20px;
+            border-radius: 14px;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            margin-top: 10px;
         }
-        
+
         th {
             background: var(--accent-primary);
             color: white;
-            padding: 18px 12px;
+            padding: 12px 6px;
+            font-size: 11px;
             font-weight: 700;
+            letter-spacing: 0.4px;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            font-size: 13px;
         }
-        
+
         td {
-            padding: 22px 12px;
-            border-bottom: 1px solid var(--glass);
-            transition: all 0.3s ease;
+            padding: 8px 4px;
+            border-bottom: 1px solid var(--divider);
+            transition: all 0.22s;
             cursor: pointer;
-            position: relative;
         }
-        
+
         .day-cell {
-            font-size: 20px;
+            font-size: 16px;
             font-weight: 700;
-            border-radius: 15px;
+            border-radius: 10px;
             text-align: center;
-        }
-        
-        .day-cell:hover {
-            background: var(--warning);
-            color: #2c3e50 !important;
-            transform: scale(1.15);
-            box-shadow: 0 10px 25px rgba(255,193,7,0.4);
-        }
-        
-        .selected {
-            background: var(--success) !important;
-            color: white !important;
-            box-shadow: 0 0 25px rgba(79,172,254,0.7);
-            transform: scale(1.08);
-        }
-        
-        .today {
-            background: var(--accent-secondary) !important;
-            color: white !important;
-            box-shadow: 0 0 20px rgba(240,147,251,0.6);
-            animation: glow 2s ease-in-out infinite alternate;
-        }
-        
-        @keyframes glow {
-            from { box-shadow: 0 0 15px rgba(240,147,251,0.5); }
-            to { box-shadow: 0 0 25px rgba(240,147,251,0.8); }
-        }
-        
-        .has-class {
-            background: linear-gradient(135deg, #ff6b6b, #ffa500) !important;
-            color: white !important;
-            box-shadow: 0 0 15px rgba(255,107,107,0.5);
-        }
-        
-        .schedule-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-        }
-        
-        .day-card {
-            background: var(--glass);
-            border-radius: 20px;
-            padding: 30px;
-            border: 1px solid var(--glass);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
-            transition: all 0.4s ease;
-        }
-        
-        .day-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-        }
-        
-        .day-name {
-            font-size: 1.8em;
-            font-weight: 800;
-            background: var(--success);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        
-        .date-info {
-            background: var(--glass);
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 25px;
-            text-align: center;
-            font-size: 1.3em;
-            border-left: 5px solid var(--accent-primary);
-        }
-        
-        .class-item {
-            background: var(--glass);
-            margin: 15px 0;
-            padding: 25px;
-            border-radius: 18px;
-            border-left: 6px solid var(--accent-secondary);
-            transition: all 0.3s ease;
-        }
-        
-        .class-item:hover {
-            transform: translateX(8px);
-            box-shadow: 0 10px 25px rgba(102,126,234,0.3);
-        }
-        
-        .class-time {
-            font-size: 1.5em;
-            font-weight: 700;
-            color: #ffd700;
-            margin-bottom: 8px;
-        }
-        
-        .class-subject {
-            font-size: 1.8em;
-            font-weight: 800;
             color: var(--text-primary);
         }
-        
-        .no-schedule {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 60px 40px;
+
+        .day-cell:hover {
+            background: var(--hover-bg) !important;
+            color: white !important;
+            transform: scale(1.13);
+            box-shadow: 0 5px 14px rgba(16,185,129,0.35);
+        }
+
+        .has-class {
+            background: var(--has-class-bg) !important;
+            color: white !important;
+            box-shadow: 0 3px 12px var(--has-class-shadow);
+        }
+
+        .today {
+            background: var(--today-bg) !important;
+            color: white !important;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        .selected {
+            background: var(--selected-bg) !important;
+            color: white !important;
+            box-shadow: 0 0 18px var(--selected-glow) !important;
+            transform: scale(1.1);
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 0 10px var(--today-glow); }
+            to   { box-shadow: 0 0 22px var(--today-glow); }
+        }
+
+        /* ===== SCHEDULE ===== */
+        .schedule-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .day-card {
             background: var(--glass);
-            border-radius: 25px;
-            border: 2px dashed var(--glass);
+            border-radius: 16px;
+            padding: 18px 20px;
+            border: 1px solid var(--glass-border);
+            transition: all 0.3s;
+        }
+        .day-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+
+        .class-label {
+            font-size: 0.78em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            background: var(--accent-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .class-subject {
+            font-size: 1.05em;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+
+        .class-meta {
+            font-size: 0.85em;
             color: var(--text-secondary);
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .date-info {
+            font-size: 0.95em;
+            color: var(--text-secondary);
+            padding: 13px 16px;
+            background: var(--glass);
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            margin-bottom: 4px;
+        }
+
+        .no-schedule {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+            font-size: 1em;
+            line-height: 2;
+        }
+
+        /* ===== TO-DO CARD ===== */
+        .todo-stats {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .stat-pill {
+            flex: 1;
+            text-align: center;
+            padding: 8px 10px;
+            border-radius: 10px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            font-size: 0.8em;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .stat-pill span {
+            display: block;
             font-size: 1.4em;
+            font-weight: 800;
+            background: var(--accent-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-        
-        @media (max-width: 1024px) {
-            .container { 
-                grid-template-columns: 1fr; 
-                gap: 30px; 
-            }
+
+        .todo-input-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
         }
-        
-        @media (max-width: 768px) {
-            .header { flex-direction: column; gap: 20px; }
-            h1 { font-size: 1.8em; text-align: center; }
-            .month-nav { flex-direction: column; gap: 15px; }
+
+        .todo-input {
+            flex: 1;
+            padding: 11px 15px;
+            border-radius: 11px;
+            border: 1.5px solid var(--input-border);
+            background: var(--input-bg);
+            color: var(--text-primary);
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+        .todo-input::placeholder { color: var(--text-secondary); }
+        .todo-input:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.13);
+        }
+
+        .todo-add-btn {
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            width: 42px;
+            height: 42px;
+            border-radius: 11px;
+            cursor: pointer;
+            font-size: 22px;
+            font-weight: 700;
+            line-height: 1;
+            transition: all 0.22s;
+            box-shadow: 0 4px 12px rgba(99,102,241,0.32);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .todo-add-btn:hover { transform: scale(1.1); box-shadow: 0 6px 18px rgba(99,102,241,0.5); }
+
+        .todo-list { display: flex; flex-direction: column; gap: 8px; max-height: 400px; overflow-y: auto; }
+        .todo-list::-webkit-scrollbar { width: 4px; }
+        .todo-list::-webkit-scrollbar-track { background: transparent; }
+        .todo-list::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 4px; }
+
+        .todo-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            background: var(--todo-bg);
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            transition: all 0.22s;
+            animation: slideIn 0.25s ease;
+        }
+        .todo-item:hover { background: var(--todo-hover); }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .todo-check {
+            width: 21px;
+            height: 21px;
+            border-radius: 50%;
+            border: 2.5px solid #6366f1;
+            background: transparent;
+            cursor: pointer;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.18s;
+            font-size: 12px;
+            color: transparent;
+            font-weight: 800;
+        }
+        .todo-check.done {
+            background: var(--accent-primary);
+            border-color: transparent;
+            color: white;
+        }
+
+        .todo-text {
+            flex: 1;
+            font-size: 14px;
+            color: var(--text-primary);
+            transition: all 0.2s;
+            line-height: 1.4;
+        }
+        .todo-text.done {
+            text-decoration: line-through;
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
+
+        .todo-del {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 16px;
+            padding: 2px 6px;
+            border-radius: 6px;
+            transition: all 0.18s;
+            flex-shrink: 0;
+            opacity: 0.5;
+        }
+        .todo-item:hover .todo-del { opacity: 1; }
+        .todo-del:hover { background: rgba(239,68,68,0.12); color: #ef4444; }
+
+        .todo-empty {
+            text-align: center;
+            padding: 28px 16px;
+            color: var(--text-secondary);
+            font-size: 0.9em;
+            line-height: 2;
+        }
+
+        /* ===== LEGEND ===== */
+        .legend {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 14px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11.5px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        .legend-dot {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+        }
+        .l-class { background: var(--has-class-bg); }
+        .l-today { background: var(--today-bg); }
+        .l-selected { background: var(--selected-bg); }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1100px) {
+            .container { grid-template-columns: 1fr 1.2fr; }
+            .todo-col { grid-column: 1 / -1; }
+        }
+        @media (max-width: 720px) {
+            .container { grid-template-columns: 1fr; }
+            h1 { font-size: 1.6em; }
+            .header { flex-direction: column; gap: 14px; }
         }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>📚 একাডেমিক ড্যাশবোর্ড</h1>
-        <button class="theme-toggle" id="themeToggle">🌙</button>
+        <button class="theme-toggle" id="themeToggle">☀️</button>
     </div>
-    
+
     <div class="container">
-        <div class="section calendar-section">
+        <!-- ===== LEFT: CALENDAR ===== -->
+        <div class="section">
             <div class="month-nav">
-                <h2 id="monthTitle">ক্যালেন্ডার লোড হচ্ছে...</h2>
-                <div>
-                    <button class="nav-btn" onclick="prevMonth()">পূর্ববর্তী</button>
-                    <button class="nav-btn" onclick="nextMonth()">পরবর্তী</button>
-                </div>
+                <button class="nav-btn" onclick="prevMonth()">◀ পূর্ববর্তী</button>
+                <span class="month-label" id="monthTitle">লোড হচ্ছে...</span>
+                <button class="nav-btn" onclick="nextMonth()">পরবর্তী ▶</button>
             </div>
-            <table id="calendarTable">
-                <!-- ক্যালেন্ডার এখানে লোড হবে -->
-            </table>
+            <table id="calendarTable"></table>
+            <div class="legend">
+                <div class="legend-item"><div class="legend-dot l-class"></div> ক্লাস আছে</div>
+                <div class="legend-item"><div class="legend-dot l-today"></div> আজকের তারিখ</div>
+                <div class="legend-item"><div class="legend-dot l-selected"></div> নির্বাচিত</div>
+            </div>
         </div>
-        
-        <div class="section schedule-section">
-            <h2 id="selectedDayTitle">তারিখ নির্বাচন করুন</h2>
+
+        <!-- ===== MIDDLE: SCHEDULE ===== -->
+        <div class="section">
+            <div class="section-title" id="selectedDayTitle">📅 তারিখ নির্বাচন করুন</div>
             <div id="scheduleContent" class="schedule-grid">
                 <div class="no-schedule">
-                    <div style="font-size: 3em; margin-bottom: 20px;">📖</div>
-                    ক্যালেন্ডার থেকে তারিখ নির্বাচন করুন
+                    <div style="font-size:2.8em;margin-bottom:14px">📖</div>
+                    ক্যালেন্ডার থেকে একটি তারিখ নির্বাচন করুন
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== RIGHT: TO-DO ===== -->
+        <div class="section todo-col">
+            <div class="section-title">✅ কাজ (To Do)</div>
+
+            <div class="todo-stats">
+                <div class="stat-pill"><span id="totalCount">0</span>মোট</div>
+                <div class="stat-pill"><span id="doneCount">0</span>সম্পন্ন</div>
+                <div class="stat-pill"><span id="pendingCount">0</span>বাকি</div>
+            </div>
+
+            <div class="todo-input-row">
+                <input class="todo-input" id="todoInput" type="text" placeholder="নতুন কাজ যোগ করুন..." maxlength="80" />
+                <button class="todo-add-btn" onclick="addTodo()">+</button>
+            </div>
+
+            <div class="todo-list" id="todoList">
+                <div class="todo-empty" id="todoEmpty">
+                    <div style="font-size:2em;margin-bottom:8px">📝</div>
+                    এখনো কোনো কাজ নেই
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        let currentYear = 2026;
-        let currentMonth = 3; // এপ্রিল
+        let currentYear = new Date().getFullYear();
+        let currentMonth = new Date().getMonth();
 
-        // রবি-বৃহস্পতি শিডিউল (শুক্র-শনি ছুটি)
+        // ===== SCHEDULE DATA =====
         function getDaySchedule(dayIndex) {
             const schedules = {
                 0: { day: 'রবিবার', classes: [
-                    { time: '১০:০০-১১:০০', subject: 'বাংলা' },
-                    { time: '১১:১৫-১২:১৫', subject: 'ইংরেজি' }
+                    { time: '10:30–11:15 AM', subject: 'Soil Science', room: 'Room 104', teacher: 'Sabirun Nahar' },
+                    { time: '11:45–12:30 PM', subject: 'English',      room: 'Room 319', teacher: '' }
                 ]},
                 1: { day: 'সোমবার', classes: [
-                    { time: '১১:০০', subject: 'BOT' },
-                    { time: '১১:৩০-১২:১৫', subject: 'ENG' },
-                    { time: '১২:৩০-০২:০০', subject: 'CHEM' }
+                    { time: '10:15–11:00 AM', subject: 'Soil Science', room: 'Room 104', teacher: 'MD. Abdul Hamid Al Azad' },
+                    { time: '11:45–12:30 PM', subject: 'Botany',       room: 'Room 324', teacher: 'Mohammad Asaduzzaman' },
+                    { time: '01:15–02:00 PM', subject: 'Chemistry',    room: 'Room 216', teacher: 'Afroza Sultana Simu' }
                 ]},
                 2: { day: 'মঙ্গলবার', classes: [
-                    { time: '১১:৪৫-১২:৩০', subject: 'MATH' },
-                    { time: '০১:০০-০২:০০', subject: 'PHY' }
+                    { time: '11:00–11:45 AM', subject: 'Botany',       room: 'Room 324', teacher: 'Manoj Mandal' },
+                    { time: '12:00–12:45 PM', subject: 'Soil Science', room: 'Room 104', teacher: 'Mohammad Nazrul Islam' },
+                    { time: '01:15–02:00 PM', subject: 'Chemistry',    room: 'Room 216', teacher: 'Mohammad Abdul Awal' }
                 ]},
                 3: { day: 'বুধবার', classes: [
-                    { time: '১১:৪৫-১২:৩০', subject: 'BOT' },
-                    { time: '১১:০০-১২:১৫', subject: 'ENG' },
-                    { time: '০১:০০-০২:০০', subject: 'CHEM' }
+                    { time: '10:15–11:00 AM', subject: 'English',      room: 'Room 319', teacher: '' },
+                    { time: '11:00–11:45 AM', subject: 'Soil Science', room: 'Room 104', teacher: 'Mithila Dev' }
                 ]},
                 4: { day: 'বৃহস্পতিবার', classes: [
-                    { time: '১১:০০-১২:০০', subject: 'ENG' },
-                    { time: '১২:১৫-০১:১৫', subject: 'MATH' }
+                    { time: '11:00–11:45 AM', subject: 'English',      room: 'Room 319', teacher: '' },
+                    { time: '11:45–12:30 PM', subject: 'Soil Science', room: 'Room 104', teacher: 'MD. Abdul Hamid Al Azad' },
+                    { time: '01:15–02:00 PM', subject: 'Chemistry',    room: 'Room 216', teacher: 'Mst. Shahanaz Siddika' }
                 ]},
-                5: { day: 'শুক্রবার', classes: [] },
-                6: { day: 'শনিবার', classes: [] }
+                5: { day: 'শুক্রবার',    classes: [] },
+                6: { day: 'শনিবার',      classes: [] }
             };
             return schedules[dayIndex] || { day: '', classes: [] };
         }
 
-        const monthNames = ['জানুয়ারি','ফেব্রুয়ারি','মার্চ','এপ্রিল','মে','জুন','জুলাই','আগস্ট','সেপ্টেম্বর','অক্টোবর','নভেম্বর','ডিসেম্বর'];
+        // ===== CALENDAR =====
+        const monthNames = ['জানুয়ারি','ফেব্রুয়ারি','মার্চ','এপ্রিল','মে','জুন','জুলাই','আগস্ট','সেপ্টেম্বর','অক্টোবর','নভেম্বর','ডিসেম্বর'];
 
         function generateCalendar(year, month) {
-            const monthTitle = document.getElementById('monthTitle');
-            monthTitle.textContent = `${monthNames[month]} ${year}`;
-            
+            document.getElementById('monthTitle').textContent = `${monthNames[month]} ${year}`;
             const table = document.getElementById('calendarTable');
-            table.innerHTML = `
-                <tr>
-                    <th>রবি</th><th>সোম</th><th>মঙ্গ</th><th>বুধ</th><th>বৃহস্প</th><th>শুক্র</th><th>শনি</th>
-                </tr>
-            `;
+            table.innerHTML = `<tr><th>রবি</th><th>সোম</th><th>মঙ্গ</th><th>বুধ</th><th>বৃহস্প</th><th>শুক্র</th><th>শনি</th></tr>`;
 
-            const firstDay = new Date(year, month, 1).getDay();
+            const firstDay    = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
-            const today = new Date().toISOString().split('T')[0];
+            const todayStr    = new Date().toISOString().split('T')[0];
 
             let row = document.createElement('tr');
-            
-            // খালি সেল
-            for (let i = 0; i < firstDay; i++) {
-                const cell = document.createElement('td');
-                row.appendChild(cell);
-            }
+            for (let i = 0; i < firstDay; i++) row.appendChild(document.createElement('td'));
 
-            // তারিখের সেল
             for (let day = 1; day <= daysInMonth; day++) {
-                const date = new Date(year, month, day);
-                const dateStr = date.toISOString().split('T')[0];
+                const date     = new Date(year, month, day);
+                const dateStr  = date.toISOString().split('T')[0];
                 const dayIndex = date.getDay();
-                
+
                 const cell = document.createElement('td');
-                cell.className = 'day-cell';
-                cell.textContent = day;
-                cell.dataset.date = dateStr;
+                cell.className      = 'day-cell';
+                cell.textContent    = day;
+                cell.dataset.date   = dateStr;
                 cell.dataset.dayindex = dayIndex;
 
-                const schedule = getDaySchedule(dayIndex);
-                if (schedule.classes.length > 0) {
-                    cell.classList.add('has-class');
-                }
-                if (dateStr === today) {
-                    cell.classList.add('today');
-                }
+                const sched = getDaySchedule(dayIndex);
+                if (sched.classes.length > 0) cell.classList.add('has-class');
+                if (dateStr === todayStr)      cell.classList.add('today');
 
                 row.appendChild(cell);
-
-                // নতুন রো
                 if (((firstDay + day) % 7 === 0) || day === daysInMonth) {
                     table.appendChild(row);
                     row = document.createElement('tr');
@@ -403,87 +602,142 @@
         }
 
         function showSchedule(dateStr, dayIndex) {
-            const schedule = getDaySchedule(parseInt(dayIndex));
-            const scheduleDiv = document.getElementById('scheduleContent');
-            const title = document.getElementById('selectedDayTitle');
+            const sched  = getDaySchedule(parseInt(dayIndex));
+            const div    = document.getElementById('scheduleContent');
+            const title  = document.getElementById('selectedDayTitle');
 
-            title.innerHTML = `📅 ${dateStr}<br><small style="font-size:0.8em; opacity:0.8">${schedule.day}</small>`;
+            const [y, m, d] = dateStr.split('-');
+            title.textContent = `📅 ${d}/${m}/${y} — ${sched.day}`;
 
-            if (schedule.classes.length === 0) {
-                scheduleDiv.innerHTML = `
-                    <div class="no-schedule">
-                        <div style="font-size: 3em; margin-bottom: 20px;">🎉</div>
-                        ${schedule.day} - সপ্তাহিক ছুটি<br>
-                        <small style="opacity:0.7">কোনো ক্লাস নেই</small>
-                    </div>
-                `;
+            if (sched.classes.length === 0) {
+                div.innerHTML = `<div class="no-schedule"><div style="font-size:2.8em;margin-bottom:12px">🎉</div>${sched.day}<br><small style="opacity:.7">সাপ্তাহিক ছুটি — কোনো ক্লাস নেই</small></div>`;
                 return;
             }
 
-            scheduleDiv.innerHTML = `
-                <div class="date-info">
-                    📚 ${schedule.day} এর ক্লাস<br>
-                    <small style="opacity:0.8">(${schedule.classes.length}টি ক্লাস)</small>
-                </div>
-                ${schedule.classes.map((cls, i) => `
+            div.innerHTML = `
+                <div class="date-info">📚 ${sched.day} — ${sched.classes.length}টি ক্লাস</div>
+                ${sched.classes.map((cls, i) => `
                     <div class="day-card">
-                        <div class="day-name">ক্লাস ${i+1}</div>
-                        <div class="class-item">
-                            <div class="class-time">⏰ ${cls.time}</div>
-                            <div class="class-subject">📖 ${cls.subject}</div>
-                        </div>
+                        <div class="class-label">ক্লাস ${i + 1}</div>
+                        <div class="class-subject">📖 ${cls.subject}</div>
+                        <div class="class-meta">⏰ ${cls.time}</div>
+                        <div class="class-meta">🚪 ${cls.room}</div>
+                        ${cls.teacher ? `<div class="class-meta">👨‍🏫 ${cls.teacher}</div>` : ''}
                     </div>
-                `).join('')}
-            `;
+                `).join('')}`;
         }
 
         function prevMonth() {
             currentMonth--;
-            if (currentMonth < 0) {
-                currentMonth = 11;
-                currentYear--;
-            }
+            if (currentMonth < 0) { currentMonth = 11; currentYear--; }
             generateCalendar(currentYear, currentMonth);
         }
-
         function nextMonth() {
             currentMonth++;
-            if (currentMonth > 11) {
-                currentMonth = 0;
-                currentYear++;
-            }
+            if (currentMonth > 11) { currentMonth = 0; currentYear++; }
             generateCalendar(currentYear, currentMonth);
         }
 
-        // ডে/নাইট মোড
-        const themeToggle = document.getElementById('themeToggle');
-        themeToggle.addEventListener('click', () => {
-            const body = document.body;
-            const isDark = body.getAttribute('data-theme') === 'light';
-            body.setAttribute('data-theme', isDark ? 'dark' : 'light');
-            themeToggle.textContent = isDark ? '🌙' : '☀️';
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        });
-
-        // লোড করার সময়
-        const savedTheme = localStorage.getItem('theme') || 'dark';
-        document.body.setAttribute('data-theme', savedTheme);
-        themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
-
-        // ক্লিক ইভেন্ট
-        document.addEventListener('click', (e) => {
+        document.addEventListener('click', e => {
             if (e.target.classList.contains('day-cell')) {
-                document.querySelectorAll('.day-cell').forEach(cell => 
-                    cell.classList.remove('selected')
-                );
+                document.querySelectorAll('.day-cell').forEach(c => c.classList.remove('selected'));
                 e.target.classList.add('selected');
                 showSchedule(e.target.dataset.date, e.target.dataset.dayindex);
             }
         });
 
-        // ✅ ক্যালেন্ডার লোড
+        // ===== TO-DO =====
+        let todos = JSON.parse(localStorage.getItem('todos') || '[]');
+
+        function saveTodos() { localStorage.setItem('todos', JSON.stringify(todos)); }
+
+        function renderTodos() {
+            const list    = document.getElementById('todoList');
+            const empty   = document.getElementById('todoEmpty');
+            const total   = todos.length;
+            const done    = todos.filter(t => t.done).length;
+            const pending = total - done;
+
+            document.getElementById('totalCount').textContent   = total;
+            document.getElementById('doneCount').textContent    = done;
+            document.getElementById('pendingCount').textContent = pending;
+
+            if (total === 0) {
+                list.innerHTML = '';
+                list.appendChild(buildEmpty());
+                return;
+            }
+
+            list.innerHTML = '';
+            todos.forEach((todo, i) => {
+                const item = document.createElement('div');
+                item.className = 'todo-item';
+                item.innerHTML = `
+                    <div class="todo-check ${todo.done ? 'done' : ''}" onclick="toggleTodo(${i})">
+                        ${todo.done ? '✓' : ''}
+                    </div>
+                    <div class="todo-text ${todo.done ? 'done' : ''}">${escHtml(todo.text)}</div>
+                    <button class="todo-del" onclick="deleteTodo(${i})" title="মুছে ফেলুন">✕</button>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        function buildEmpty() {
+            const d = document.createElement('div');
+            d.className = 'todo-empty';
+            d.innerHTML = '<div style="font-size:2em;margin-bottom:8px">📝</div>এখনো কোনো কাজ নেই';
+            return d;
+        }
+
+        function addTodo() {
+            const input = document.getElementById('todoInput');
+            const text  = input.value.trim();
+            if (!text) { input.focus(); return; }
+            todos.unshift({ text, done: false });
+            saveTodos();
+            renderTodos();
+            input.value = '';
+            input.focus();
+        }
+
+        function toggleTodo(i) {
+            todos[i].done = !todos[i].done;
+            saveTodos();
+            renderTodos();
+        }
+
+        function deleteTodo(i) {
+            todos.splice(i, 1);
+            saveTodos();
+            renderTodos();
+        }
+
+        function escHtml(s) {
+            return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+
+        // Enter key to add
+        document.getElementById('todoInput').addEventListener('keydown', e => {
+            if (e.key === 'Enter') addTodo();
+        });
+
+        // ===== THEME =====
+        const themeToggle = document.getElementById('themeToggle');
+        themeToggle.addEventListener('click', () => {
+            const isLight = document.body.getAttribute('data-theme') === 'light';
+            document.body.setAttribute('data-theme', isLight ? 'dark' : 'light');
+            themeToggle.textContent = isLight ? '☀️' : '🌙';
+            localStorage.setItem('theme', isLight ? 'dark' : 'light');
+        });
+
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.body.setAttribute('data-theme', savedTheme);
+        themeToggle.textContent = savedTheme === 'dark' ? '🌙' : '☀️';
+
+        // ===== INIT =====
         generateCalendar(currentYear, currentMonth);
-        console.log('ক্যালেন্ডার সফলভাবে লোড হয়েছে!');
+        renderTodos();
     </script>
 </body>
 </html>
